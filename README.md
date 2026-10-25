@@ -98,8 +98,7 @@ proyecto/
 │   └── .env            ← AEMET_API_KEY="tu-clave"   (no se sube a Git)
 └── public/             ← raíz de la web
     ├── index.php
-    └── css/
-        └── aemet.css
+    └── style.css
 ```
 
 ## Instalación
