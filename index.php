@@ -1,14 +1,17 @@
 <?php
+//Obtenemos la API de un archivo seguro .env
 $rutaEnv = __DIR__ . '/../.gitignore/.env';
 $env = is_readable($rutaEnv) ? parse_ini_file($rutaEnv) : [];
 $clave = trim($env['AEMET_API_KEY'] ?? '');
 
+//Ponemos a prueba si la api es válida o no
 if ($clave === '') {
     http_response_code(500);
     exit('Error de configuración: falta la API key de AEMET.');
 }
 define('AEMET_API_KEY', $clave);
 
+//Hacemos una función, con la estructura que se ha de llevar a la hora de solicitar datos
 function peticion(string $url): ?string
 {
     $ch = curl_init($url);
@@ -20,9 +23,13 @@ function peticion(string $url): ?string
     $cuerpo = curl_exec($ch);
     $codigo = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
+    //Hacemos un manejo de errores en caso de que no se encuentre el dato
     return ($cuerpo !== false && $codigo === 200) ? $cuerpo : null;
 }
 
+//Una función que hace la petición a la Api, de forma segura y códificada con el estándar 
+//UTF-8: Formato de transformación Unicode de 8 bits
+//Endpoint: Donde una Api recibe las solicitudes digitales y la envia
 function aemet(string $endpoint): ?string
 {
     $cache = sys_get_temp_dir() . '/aemet_' . md5($endpoint);
@@ -47,6 +54,7 @@ function aemet(string $endpoint): ?string
     return $datos;
 }
 
+//He hecho una función, para limpiar de caracteres especiales, el texto.
 function e($texto): string
 {
     return htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
@@ -86,12 +94,12 @@ if (isset($comunidades[$ccaa])) {
         $observacion = is_array($registros) && $registros ? end($registros) : null; // la hora más reciente
     }
 }
-
+//Códigos de las comunidades áutonomas
 $comunidades = [
     'and' => ['Andalucía', '5783'],
     'arn' => ['Aragón', '9434'],
     'ast' => ['Asturias', null],
-    'bal' => ['Illes Balears', null],
+    'bal' => ['Illes Balears', null], 
     'coo' => ['Canarias', null],
     'can' => ['Cantabria', null],
     'cle' => ['Castilla y León', null],
@@ -128,16 +136,16 @@ if (isset($comunidades[$ccaa])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AEMET</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <main class="contenedor">
     <h1>El tiempo por comunidad autónoma</h1>
 
     <form method="get" class="selector">
-        <label for="ccaa">Comunidad</label>
+        <label for="ccaa">Comunidad autónoma</label>
         <select name="ccaa" id="ccaa" onchange="this.form.submit()">
-            <option value="">Elige una…</option>
+            <option value="">Elige una:</option>
             <?php foreach ($comunidades as $codigo => [$nombre]): ?>
                 <option value="<?= e($codigo) ?>" <?= $codigo === $ccaa ? 'selected' : '' ?>><?= e($nombre) ?></option>
             <?php endforeach; ?>
