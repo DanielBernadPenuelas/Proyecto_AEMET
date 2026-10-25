@@ -94,8 +94,7 @@ La API key **nunca llega al navegador**: todas las peticiones salen del servidor
 ```
 proyecto/
 ├── .gitignore          ← contiene la línea: privado/
-├── privado/
-│   └── .env            ← AEMET_API_KEY="tu-clave"   (no se sube a Git)
+|    └── Api.env        ← AEMET_API_KEY="tu-clave"   (no se sube a Git)
 └── public/             ← raíz de la web
     ├── index.php
     └── style.css
