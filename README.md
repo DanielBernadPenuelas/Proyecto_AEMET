@@ -1,4 +1,4 @@
-# El tiempo por comunidad autónoma (AEMET OpenData)
+# El tiempo por comunidad autónoma con la API de AEMET
 
 Aplicación web en PHP que consulta la API de **AEMET OpenData** (Agencia Estatal de Meteorología). Con un selector se elige una comunidad autónoma y la página muestra:
 
